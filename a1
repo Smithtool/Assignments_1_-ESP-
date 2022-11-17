@@ -1,0 +1,189 @@
+#include <iostream>
+
+int main()
+{   float south = 1.0;
+    float south_east = 0.95;
+    float east = 0.90;
+    float south_west = 0.95;
+    float west = 0.90;
+    int n_modules = 0;
+    int rate = 0;
+    int direction = 0;
+    int y_spez = 905;
+    const float power = 0.375f;
+    const float price = 259.99f;
+    int number_subsidy = 0;
+    while (true)
+    {   
+        printf("Number of solar modules: ");
+        scanf ("%d", & n_modules);
+        if (n_modules < 1 || n_modules > 80)
+        {
+            printf("Invalid input! The number of solar modules must be an integer greater than or equal to 1 and less than or equal to 80.\n");
+            continue;
+        }
+        break;
+    }
+    while (true)
+    {
+        printf("Subsidy in %% of the investment: ");
+        scanf ("%d", & number_subsidy);
+        if (number_subsidy < 0 || number_subsidy > 100)
+        {
+            printf("Invalid input! The subsidy must be an integer greater than or equal to 0 and less than or equal to 100.\n");
+            continue;
+        }
+        break;
+    }
+    printf("Direction of the photovoltaic system:\n 1: SOUTH\n 2: SOUTH-EAST\n 3: EAST\n 4: SOUTH-WEST\n 5: WEST\n");
+    
+    while (true)
+    {
+        printf("Please enter the direction: ");
+        scanf("%d", & direction);
+        if (direction < 0  || direction > 5)
+        {
+            continue;
+        }
+        
+        printf("Electricity rate in cents/kWh: ");
+        scanf("%d", & rate);
+        if (rate < 0 || rate > 100)
+        {
+            printf("Invalid input! The electricity rate must be an integer which is at least 1 and must not exceed 100 cents/kWh.\n");
+            continue;
+        }
+        
+        if (n_modules == 1 && direction == 1)
+        {
+            printf("One module facing SOUTH.\n");
+             break;
+
+        }else if (n_modules == 1 && direction == 2)
+        {
+            printf("One module facing SOUTH-EAST.\n");
+             break;
+            
+        }else if (n_modules == 1 && direction == 3)
+        {
+            printf("One module facing EAST.\n");
+             break;
+            
+        }else if (n_modules == 1 && direction == 4)
+        {
+            printf("One module facing SOUTH-WEST.\n");
+             break;
+            
+        }else if (n_modules == 1 && direction == 5)
+        {
+            printf("One module facing WEST.\n");
+             break;
+        }
+        //----------------------------------------------------------------------
+        
+        if (direction == 1)
+        {
+            printf("%i modules facing SOUTH.\n", (int)n_modules);
+            break;
+
+        }else if (direction == 2)
+        {
+            printf("%i modules facing SOUTH-EAST.\n", (int)n_modules);
+            break;
+        }else if (direction == 3)
+        {
+            printf("%i modules facing EAST.\n", (int)n_modules);
+            break;
+        }else if (direction == 4)
+        {
+            printf("%i modules facing SOUTH-WEST.\n", (int)n_modules);
+            break;
+        }else if (direction == 5)
+        {
+            printf("%i modules facing WEST.\n", (int)n_modules);
+        }   break;
+        break;
+    }
+    float total_power = (float)n_modules * power;
+    float achieved_total_power = 0;
+    if (direction == 1)
+    {   
+        achieved_total_power = total_power * south;
+        printf("Achievable total power: %.2f kWp.\n", achieved_total_power); 
+        
+    }else if (direction == 2)
+    {   
+        printf("Achievable total power: %.2f kWp.\n", total_power);
+        achieved_total_power = total_power * south_east;
+        printf("However, due to the suboptimal direction, only %.2f kWp are achieved.\n", achieved_total_power);
+        
+    }else if (direction == 3)
+    {   
+        printf("Achievable total power: %.2f kWp.\n", total_power);
+        achieved_total_power = total_power * east;
+        printf("However, due to the suboptimal direction, only %.2f kWp are achieved.\n", achieved_total_power);
+        
+    }else if (direction == 4)
+    {   
+        printf("Achievable total power: %.2f kWp.\n", total_power);
+        achieved_total_power = total_power * south_west;
+        printf("However, due to the suboptimal direction, only %.2f kWp are achieved.\n", achieved_total_power);
+        
+    }else if (direction == 5)
+    {   
+        printf("Achievable total power: %.2f kWp.\n", total_power);
+        achieved_total_power = total_power * west;
+        printf("However, due to the suboptimal direction, only %.2f kWp are achieved.\n", achieved_total_power);
+    }
+    float y = (float)y_spez * achieved_total_power;
+    float earnings = (y * (float)rate)/100; //Erlös pro Jahr
+    float costs = price * (float)n_modules;
+    printf("Investment of %.2f leads to earnings of %.2f each year.\n", costs, earnings);
+    int year = 1;
+    if (number_subsidy > 0)
+    {
+        float subsidy = costs * ((float)number_subsidy/100);
+        float costs_to_compensate = costs - earnings;
+        while (costs_to_compensate >= 0)
+        {   if (costs_to_compensate - earnings - subsidy <= 0 && year == 1)
+            {
+                printf("PV system amortized within a year.\n");
+                break;
+            }
+            
+            if (year == 1)
+            {   costs_to_compensate = costs_to_compensate - subsidy;
+                printf("After year %d: %.2f still to compensate. (%.2f paid by the government\n)", year, costs_to_compensate, subsidy);
+                year++;
+                costs_to_compensate = costs_to_compensate - earnings; 
+            }
+            printf("After year %d: %.2f still to compensate.\n", year, costs_to_compensate);
+            year++;
+            costs_to_compensate = costs_to_compensate - earnings;
+            if (costs_to_compensate <= 0 && year > 1)
+            {
+                printf("PV system amortized within %i years.\n", year++);
+            }
+
+            
+        }
+    }else if (number_subsidy == 0)
+    {float costs_to_compensate = costs - earnings;
+       while (costs_to_compensate >= 0)
+        {   if (costs_to_compensate - earnings <= 0 && year == 1)
+            {
+                printf("PV system amortized within a year.\n");
+                break;
+            }
+            printf("After year %d: %.2f still to compensate.\n", year, costs_to_compensate);
+            year++;
+            costs_to_compensate = costs_to_compensate - earnings;
+            if (costs_to_compensate <= 0 && year > 1)
+            {
+                printf("PV system amortized within %i years.\n", year++);
+            }
+            
+        } 
+    }
+    
+}
